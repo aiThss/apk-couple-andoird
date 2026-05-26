@@ -1,0 +1,45 @@
+services:
+  mongo:
+    image: mongo:7.0
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-couple_snap}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-couple_snap_password}
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+
+  api:
+    build:
+      context: ./server
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      MONGODB_URI: mongodb://${MONGO_ROOT_USERNAME:-couple_snap}:${MONGO_ROOT_PASSWORD:-couple_snap_password}@mongo:27017/couple_snap?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-replace-with-a-long-random-secret}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      UPLOAD_DIR: /app/uploads
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@couplesnap.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-now}
+    volumes:
+      - api-uploads:/app/uploads
+    ports:
+      - "${API_PORT:-8080}:8080"
+
+  admin:
+    build:
+      context: ./admin
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${ADMIN_PORT:-8081}:80"
+
+volumes:
+  mongo-data:
+  api-uploads:

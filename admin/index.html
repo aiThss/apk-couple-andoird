@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Couple Snap Admin</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">CS</div>
+          <div>
+            <h1>Couple Snap</h1>
+            <p>Admin</p>
+          </div>
+        </div>
+
+        <label class="field compact">
+          <span>API URL</span>
+          <input id="apiBase" placeholder="https://api.example.com/api" />
+        </label>
+
+        <nav class="tabs">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="users">Users</button>
+          <button class="tab" data-tab="couples">Couples</button>
+          <button class="tab" data-tab="photos">Photos</button>
+        </nav>
+
+        <button id="logoutButton" class="secondary hidden">Logout</button>
+      </aside>
+
+      <section class="content">
+        <section id="loginPanel" class="panel login-panel">
+          <h2>Admin login</h2>
+          <p>Use the credentials configured in the API environment.</p>
+          <div class="form-grid">
+            <label class="field">
+              <span>Email</span>
+              <input id="email" type="email" autocomplete="email" />
+            </label>
+            <label class="field">
+              <span>Password</span>
+              <input id="password" type="password" autocomplete="current-password" />
+            </label>
+          </div>
+          <button id="loginButton">Login</button>
+        </section>
+
+        <section id="appPanel" class="hidden">
+          <div class="topbar">
+            <div>
+              <h2 id="pageTitle">Overview</h2>
+              <p id="statusText">Connected to API.</p>
+            </div>
+            <button id="refreshButton" class="secondary">Refresh</button>
+          </div>
+
+          <div id="overview" class="tab-page">
+            <div class="metric-grid">
+              <article class="metric">
+                <span>Users</span>
+                <strong id="metricUsers">0</strong>
+              </article>
+              <article class="metric">
+                <span>Couples</span>
+                <strong id="metricCouples">0</strong>
+              </article>
+              <article class="metric">
+                <span>Photos</span>
+                <strong id="metricPhotos">0</strong>
+              </article>
+              <article class="metric">
+                <span>Blocked</span>
+                <strong id="metricBlocked">0</strong>
+              </article>
+            </div>
+          </div>
+
+          <div id="users" class="tab-page hidden">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Couple</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="couples" class="tab-page hidden">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Love start date</th>
+                    <th>Members</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="couplesTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="photos" class="tab-page hidden">
+            <div id="photosGrid" class="photos-grid"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
