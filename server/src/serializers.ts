@@ -1,4 +1,9 @@
-import type { CoupleDocument, PhotoDocument, UserDocument } from './models.js';
+import type {
+  CoupleDocument,
+  PhotoDocument,
+  RandomEventDocument,
+  UserDocument,
+} from './models.js';
 
 export function serializeCouple(couple: CoupleDocument | null | undefined) {
   if (!couple) {
@@ -14,12 +19,21 @@ export function serializeCouple(couple: CoupleDocument | null | undefined) {
   };
 }
 
-export function serializeUser(user: UserDocument, couple?: CoupleDocument | null) {
+export function serializeUser(
+  user: UserDocument,
+  couple?: CoupleDocument | null,
+  partner?: UserDocument | null,
+) {
   return {
     id: user._id.toString(),
     displayName: user.displayName,
     partnerName: user.partnerName,
     email: user.email ?? null,
+    avatarUrl: user.avatarUrl ?? null,
+    partnerAvatarUrl: partner?.avatarUrl ?? user.partnerAvatarUrl ?? null,
+    fallbackPartnerAvatarUrl: user.partnerAvatarUrl ?? null,
+    emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+    trustedDeviceCount: user.trustedDevices?.length ?? 0,
     role: user.role,
     status: user.status,
     couple: serializeCouple(couple ?? null),
@@ -38,5 +52,17 @@ export function serializePhoto(photo: PhotoDocument) {
     caption: photo.caption,
     deletedAt: photo.deletedAt?.toISOString() ?? null,
     createdAt: photo.createdAt.toISOString(),
+  };
+}
+
+export function serializeRandomEvent(event: RandomEventDocument) {
+  return {
+    id: event._id.toString(),
+    coupleId: event.coupleId.toString(),
+    userId: event.userId.toString(),
+    category: event.category,
+    prompt: event.prompt,
+    detail: event.detail ?? null,
+    createdAt: event.createdAt.toISOString(),
   };
 }

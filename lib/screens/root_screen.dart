@@ -10,6 +10,7 @@ import '../widgets/pixel_sparkle.dart';
 import 'home_screen.dart';
 import 'memories_screen.dart';
 import 'profile_screen.dart';
+import 'random_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({
@@ -108,6 +109,11 @@ class _RootScreenState extends State<RootScreen> {
                     dynamicThemeController: widget.dynamicThemeController,
                     refreshSeed: _refreshSeed,
                   ),
+                  RandomScreen(
+                    profile: _profile,
+                    apiService: widget.apiService,
+                    refreshSeed: _refreshSeed,
+                  ),
                   ProfileScreen(
                     profile: _profile,
                     apiService: widget.apiService,
@@ -121,7 +127,6 @@ class _RootScreenState extends State<RootScreen> {
           ),
           bottomNavigationBar: GlassNavBar(
             selectedIndex: _selectedIndex,
-            accentColor: neonPink,
             onChanged: (index) => setState(() => _selectedIndex = index),
           ),
         );

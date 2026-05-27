@@ -5,6 +5,7 @@ export class HttpError extends Error {
   constructor(
     public status: number,
     message: string,
+    public code?: string,
   ) {
     super(message);
   }
@@ -28,7 +29,10 @@ export function errorHandler(
   }
 
   if (error instanceof HttpError) {
-    return res.status(error.status).json({ error: error.message });
+    return res.status(error.status).json({
+      error: error.message,
+      ...(error.code ? { code: error.code } : {}),
+    });
   }
 
   console.error(error);

@@ -13,6 +13,9 @@ const pageTitle = document.querySelector("#pageTitle");
 apiBaseInput.value =
   localStorage.getItem("cs_api_base") ||
   new URLSearchParams(window.location.search).get("api") ||
+  (window.location.hostname === "couple.babyress.games"
+    ? "https://api.couple.babyress.games/api"
+    : null) ||
   `${window.location.origin}/api`;
 
 function apiBase() {
@@ -97,7 +100,13 @@ function showTab(tab) {
 async function refresh() {
   try {
     statusText.textContent = "Loading...";
-    await Promise.all([loadSummary(), loadUsers(), loadCouples(), loadPhotos()]);
+    await Promise.all([
+      loadSummary(),
+      loadUsers(),
+      loadCouples(),
+      loadPhotos(),
+      loadRandomEvents(),
+    ]);
     statusText.textContent = `Connected to ${apiBase()}`;
   } catch (error) {
     statusText.textContent = error.message;
@@ -113,6 +122,7 @@ async function loadSummary() {
   document.querySelector("#metricCouples").textContent = summary.couples;
   document.querySelector("#metricPhotos").textContent = summary.photos;
   document.querySelector("#metricBlocked").textContent = summary.blockedUsers;
+  document.querySelector("#metricRandom").textContent = summary.randomEvents || 0;
 }
 
 async function loadUsers() {
@@ -168,6 +178,24 @@ async function loadPhotos() {
             <button class="danger" data-delete-photo="${photo.id}">Delete</button>
           </div>
         </article>
+      `,
+    )
+    .join("");
+}
+
+async function loadRandomEvents() {
+  const { events } = await request("/admin/random-events");
+  document.querySelector("#randomTable").innerHTML = events
+    .map(
+      (event) => `
+        <tr>
+          <td>${escapeHtml(event.category)}</td>
+          <td>
+            <strong>${escapeHtml(event.prompt)}</strong>
+            <div class="muted">${escapeHtml(event.detail || "")}</div>
+          </td>
+          <td>${formatDate(event.createdAt)}</td>
+        </tr>
       `,
     )
     .join("");

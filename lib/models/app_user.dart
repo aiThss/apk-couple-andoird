@@ -8,6 +8,8 @@ class AppUser {
     required this.createdAt,
     required this.status,
     this.email,
+    this.avatarUrl,
+    this.partnerAvatarUrl,
   });
 
   final String uid;
@@ -18,6 +20,8 @@ class AppUser {
   final DateTime createdAt;
   final String status;
   final String? email;
+  final String? avatarUrl;
+  final String? partnerAvatarUrl;
 
   bool get isBlocked => status == 'blocked';
 
@@ -39,6 +43,8 @@ class AppUser {
       displayName: json['displayName'] as String? ?? 'Ban',
       partnerName: json['partnerName'] as String? ?? 'Nguoi ay',
       email: json['email'] as String?,
+      avatarUrl: json['avatarUrl'] as String?,
+      partnerAvatarUrl: json['partnerAvatarUrl'] as String?,
       coupleId: couple?['code'] as String? ?? '',
       loveStartDate: _dateFrom(couple?['loveStartDate']) ?? DateTime.now(),
       createdAt: _dateFrom(json['createdAt']) ?? DateTime.now(),
@@ -51,6 +57,8 @@ class AppUser {
     String? partnerName,
     DateTime? loveStartDate,
     String? status,
+    String? avatarUrl,
+    String? partnerAvatarUrl,
   }) {
     return AppUser(
       uid: uid,
@@ -61,6 +69,8 @@ class AppUser {
       createdAt: createdAt,
       status: status ?? this.status,
       email: email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      partnerAvatarUrl: partnerAvatarUrl ?? this.partnerAvatarUrl,
     );
   }
 

@@ -93,6 +93,7 @@ Important environment variables:
 - `UPLOAD_DIR`
 - `ADMIN_EMAIL`
 - `ADMIN_PASSWORD`
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` for email verification codes.
 
 ## Admin
 
@@ -105,6 +106,7 @@ Admin capabilities:
 - Block/unblock users.
 - Edit couple love start date.
 - Soft-delete photos.
+- View recent random events.
 
 ## Brand Assets
 

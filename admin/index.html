@@ -27,6 +27,7 @@
           <button class="tab" data-tab="users">Users</button>
           <button class="tab" data-tab="couples">Couples</button>
           <button class="tab" data-tab="photos">Photos</button>
+          <button class="tab" data-tab="random">Random</button>
         </nav>
 
         <button id="logoutButton" class="secondary hidden">Logout</button>
@@ -76,6 +77,10 @@
                 <span>Blocked</span>
                 <strong id="metricBlocked">0</strong>
               </article>
+              <article class="metric">
+                <span>Random</span>
+                <strong id="metricRandom">0</strong>
+              </article>
             </div>
           </div>
 
@@ -114,6 +119,21 @@
 
           <div id="photos" class="tab-page hidden">
             <div id="photosGrid" class="photos-grid"></div>
+          </div>
+
+          <div id="random" class="tab-page hidden">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Prompt</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="randomTable"></tbody>
+              </table>
+            </div>
           </div>
         </section>
       </section>

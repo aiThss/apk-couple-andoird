@@ -24,6 +24,12 @@ services:
       UPLOAD_DIR: /app/uploads
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@couplesnap.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-now}
+      SMTP_HOST: "${SMTP_HOST:-}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SMTP_SECURE: "${SMTP_SECURE:-false}"
+      SMTP_USER: "${SMTP_USER:-}"
+      SMTP_PASS: "${SMTP_PASS:-}"
+      MAIL_FROM: "${MAIL_FROM:-Couple Snap <no-reply@couplesnap.local>}"
     volumes:
       - api-uploads:/app/uploads
     expose:

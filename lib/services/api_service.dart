@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -7,11 +8,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/app_user.dart';
 import '../models/couple_photo.dart';
+import '../models/random_event.dart';
 
 class ApiException implements Exception {
-  const ApiException(this.message);
+  const ApiException(this.message, {this.code, this.statusCode});
 
   final String message;
+  final String? code;
+  final int? statusCode;
+
+  bool get requiresEmailCode => code == 'EMAIL_CODE_REQUIRED';
 
   @override
   String toString() => message;
@@ -29,26 +35,39 @@ class ApiService {
 
   static const _defaultBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8080/api',
+    defaultValue: 'https://api.couple.babyress.games/api',
   );
 
   static const _tokenKey = 'couple_snap_token';
   static const _baseUrlKey = 'couple_snap_api_base_url';
+  static const _deviceIdKey = 'couple_snap_device_id';
 
   final http.Client _client;
 
   String _baseUrl = _defaultBaseUrl;
   String? _token;
+  String? _deviceId;
 
   String get baseUrl => _baseUrl;
   bool get hasToken => _token != null && _token!.isNotEmpty;
+  String get deviceId => _deviceId ?? '';
 
   Future<void> loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
+    final savedBaseUrl = prefs.getString(_baseUrlKey);
     _baseUrl = _normalizeBaseUrl(
-      prefs.getString(_baseUrlKey) ?? _defaultBaseUrl,
+      _shouldMigrateBaseUrl(savedBaseUrl)
+          ? _defaultBaseUrl
+          : savedBaseUrl ?? _defaultBaseUrl,
     );
+    await prefs.setString(_baseUrlKey, _baseUrl);
     _token = prefs.getString(_tokenKey);
+
+    _deviceId = prefs.getString(_deviceIdKey);
+    if (_deviceId == null || _deviceId!.isEmpty) {
+      _deviceId = _generateDeviceId();
+      await prefs.setString(_deviceIdKey, _deviceId!);
+    }
   }
 
   Future<void> setBaseUrl(String value) async {
@@ -64,6 +83,7 @@ class ApiService {
     required DateTime loveStartDate,
     String? email,
     String? password,
+    String? emailCode,
   }) async {
     final payload = await _jsonRequest(
       'POST',
@@ -75,6 +95,9 @@ class ApiService {
         'loveStartDate': loveStartDate.toIso8601String(),
         if (email != null && email.trim().isNotEmpty) 'email': email.trim(),
         if (password != null && password.isNotEmpty) 'password': password,
+        if (email != null && email.trim().isNotEmpty) 'deviceId': deviceId,
+        if (emailCode != null && emailCode.trim().isNotEmpty)
+          'emailCode': emailCode.trim(),
       },
       authenticated: false,
     );
@@ -85,15 +108,31 @@ class ApiService {
   Future<AuthSession> login({
     required String email,
     required String password,
+    String? emailCode,
   }) async {
     final payload = await _jsonRequest(
       'POST',
       '/auth/login',
-      body: {'email': email.trim(), 'password': password},
+      body: {
+        'email': email.trim(),
+        'password': password,
+        'deviceId': deviceId,
+        if (emailCode != null && emailCode.trim().isNotEmpty)
+          'emailCode': emailCode.trim(),
+      },
       authenticated: false,
     );
 
     return _saveSession(payload);
+  }
+
+  Future<void> requestAuthCode({required String email}) async {
+    await _jsonRequest(
+      'POST',
+      '/auth/request-code',
+      body: {'email': email.trim(), 'deviceId': deviceId},
+      authenticated: false,
+    );
   }
 
   Future<AppUser?> restoreSession() async {
@@ -132,6 +171,29 @@ class ApiService {
     return AppUser.fromJson(payload['user'] as Map<String, dynamic>);
   }
 
+  Future<AppUser> uploadAvatar({
+    required File file,
+    required bool partner,
+  }) async {
+    final request = http.MultipartRequest(
+      'POST',
+      _uri(partner ? '/me/partner-avatar' : '/me/avatar'),
+    );
+    request.headers.addAll(_headers(authenticated: true, json: false));
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'avatar',
+        file.path,
+        contentType: _contentTypeFor(file.path),
+      ),
+    );
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    final payload = _decodeResponse(response);
+    return AppUser.fromJson(payload['user'] as Map<String, dynamic>);
+  }
+
   Future<CouplePhoto?> latestPartnerPhoto() async {
     final payload = await _jsonRequest('GET', '/photos/latest-partner');
     final photo = payload['photo'];
@@ -147,6 +209,34 @@ class ApiService {
     return photos
         .map((photo) => CouplePhoto.fromJson(photo as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<List<RandomCategory>> randomCategories() async {
+    final payload = await _jsonRequest('GET', '/random/categories');
+    final categories = payload['categories'] as List<dynamic>? ?? const [];
+    return categories
+        .map(
+          (category) =>
+              RandomCategory.fromJson(category as Map<String, dynamic>),
+        )
+        .toList();
+  }
+
+  Future<List<RandomEvent>> randomHistory() async {
+    final payload = await _jsonRequest('GET', '/random/history');
+    final events = payload['events'] as List<dynamic>? ?? const [];
+    return events
+        .map((event) => RandomEvent.fromJson(event as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<RandomEvent> drawRandom({required String category}) async {
+    final payload = await _jsonRequest(
+      'POST',
+      '/random/draw',
+      body: {'category': category},
+    );
+    return RandomEvent.fromJson(payload['event'] as Map<String, dynamic>);
   }
 
   Future<CouplePhoto> uploadPhoto({
@@ -226,7 +316,11 @@ class ApiService {
         : <String, dynamic>{'data': decoded};
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw ApiException(payload['error'] as String? ?? 'Request failed');
+      throw ApiException(
+        payload['error'] as String? ?? 'Request failed',
+        code: payload['code'] as String?,
+        statusCode: response.statusCode,
+      );
     }
 
     return payload;
@@ -251,5 +345,21 @@ class ApiService {
       return _defaultBaseUrl;
     }
     return trimmed.replaceAll(RegExp(r'/+$'), '');
+  }
+
+  bool _shouldMigrateBaseUrl(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return true;
+    }
+    final lower = value.toLowerCase();
+    return lower.contains('10.0.2.2') ||
+        lower.contains('localhost') ||
+        lower.contains('127.0.0.1');
+  }
+
+  String _generateDeviceId() {
+    final random = Random.secure();
+    final bytes = List<int>.generate(16, (_) => random.nextInt(256));
+    return bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
   }
 }

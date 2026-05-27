@@ -7,6 +7,8 @@ import '../widgets/glass_card.dart';
 import '../widgets/glow_button.dart';
 import '../widgets/pixel_sparkle.dart';
 
+enum _AuthMode { setup, login }
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({
     required this.apiService,
@@ -25,37 +27,40 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _apiUrlController;
   final _nameController = TextEditingController();
   final _partnerController = TextEditingController();
   final _coupleCodeController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _codeController = TextEditingController();
 
   DateTime _loveStartDate = DateTime.now().subtract(const Duration(days: 365));
+  _AuthMode _mode = _AuthMode.setup;
   bool _loading = false;
+  bool _needsCode = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _apiUrlController = TextEditingController(text: widget.apiService.baseUrl);
     _error = widget.initialError;
   }
 
   @override
   void dispose() {
-    _apiUrlController.dispose();
     _nameController.dispose();
     _partnerController.dispose();
     _coupleCodeController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _codeController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLogin = _mode == _AuthMode.login;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -78,8 +83,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    neonPink.withValues(alpha: 0.18),
-                    darkBg.withValues(alpha: 0.9),
+                    neonPink.withValues(alpha: 0.14),
+                    darkBg.withValues(alpha: 0.94),
                   ],
                 ),
               ),
@@ -99,11 +104,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         color: neonPink.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: softPink.withValues(alpha: 0.56),
+                          color: softPink.withValues(alpha: 0.5),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: neonPink.withValues(alpha: 0.4),
+                            color: neonPink.withValues(alpha: 0.3),
                             blurRadius: 22,
                           ),
                         ],
@@ -128,10 +133,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 ),
                           ),
                           Text(
-                            'Private neon snaps for two.',
+                            'Private snaps for two.',
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: softPink.withValues(alpha: 0.8),
+                                  color: Colors.white.withValues(alpha: 0.62),
                                   fontWeight: FontWeight.w700,
                                 ),
                           ),
@@ -140,9 +145,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 26),
+                SegmentedButton<_AuthMode>(
+                  segments: const [
+                    ButtonSegment(
+                      value: _AuthMode.setup,
+                      label: Text('Tao tai khoan'),
+                      icon: Icon(Icons.favorite_rounded),
+                    ),
+                    ButtonSegment(
+                      value: _AuthMode.login,
+                      label: Text('Dang nhap'),
+                      icon: Icon(Icons.login_rounded),
+                    ),
+                  ],
+                  selected: {_mode},
+                  onSelectionChanged: _loading
+                      ? null
+                      : (value) {
+                          setState(() {
+                            _mode = value.first;
+                            _needsCode = false;
+                            _codeController.clear();
+                            _error = null;
+                          });
+                        },
+                ),
+                const SizedBox(height: 22),
                 Text(
-                  'Setup couple của hai người',
+                  isLogin ? 'Dang nhap may nay' : 'Setup couple cua hai nguoi',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
@@ -151,9 +182,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Nhập cùng một couple code trên hai máy để xem ảnh của nhau.',
+                  isLogin
+                      ? 'May moi se can them ma xac thuc gui qua email.'
+                      : 'Hai may dung cung couple code de thay snap cua nhau.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.68),
+                    color: Colors.white.withValues(alpha: 0.66),
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -165,79 +198,87 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       children: [
                         TextFormField(
-                          controller: _apiUrlController,
-                          keyboardType: TextInputType.url,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'API URL',
-                            helperText: 'VD: https://api.tenmiencuaban.com/api',
-                            prefixIcon: Icon(Icons.cloud_rounded),
-                          ),
-                          validator: _required,
-                        ),
-                        const SizedBox(height: 14),
-                        TextFormField(
-                          controller: _nameController,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'Tên của bạn',
-                            prefixIcon: Icon(Icons.person_rounded),
-                          ),
-                          validator: _required,
-                        ),
-                        const SizedBox(height: 14),
-                        TextFormField(
-                          controller: _partnerController,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'Tên người ấy',
-                            prefixIcon: Icon(Icons.favorite_rounded),
-                          ),
-                          validator: _required,
-                        ),
-                        const SizedBox(height: 14),
-                        TextFormField(
-                          controller: _coupleCodeController,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'Couple code',
-                            helperText:
-                                'Mã này sẽ tự viết hoa và bỏ khoảng trắng.',
-                            prefixIcon: Icon(Icons.key_rounded),
-                          ),
-                          validator: _required,
-                        ),
-                        const SizedBox(height: 14),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(22),
-                          onTap: _pickLoveStartDate,
-                          child: InputDecorator(
-                            decoration: const InputDecoration(
-                              labelText: 'Ngày yêu nhau',
-                              prefixIcon: Icon(Icons.calendar_month_rounded),
-                            ),
-                            child: Text(_formatDate(_loveStartDate)),
-                          ),
-                        ),
-                        const SizedBox(height: 22),
-                        TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
-                            labelText: 'Email (tùy chọn)',
+                            labelText: 'Email',
                             prefixIcon: Icon(Icons.mail_rounded),
                           ),
+                          validator: _requiredEmail,
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
+                          textInputAction: isLogin
+                              ? TextInputAction.done
+                              : TextInputAction.next,
                           decoration: const InputDecoration(
-                            labelText: 'Mật khẩu nếu dùng email',
+                            labelText: 'Mat khau',
                             prefixIcon: Icon(Icons.lock_rounded),
                           ),
+                          validator: _requiredPassword,
                         ),
+                        if (!isLogin) ...[
+                          const SizedBox(height: 14),
+                          TextFormField(
+                            controller: _nameController,
+                            textInputAction: TextInputAction.next,
+                            decoration: const InputDecoration(
+                              labelText: 'Ten cua ban',
+                              prefixIcon: Icon(Icons.person_rounded),
+                            ),
+                            validator: _required,
+                          ),
+                          const SizedBox(height: 14),
+                          TextFormField(
+                            controller: _partnerController,
+                            textInputAction: TextInputAction.next,
+                            decoration: const InputDecoration(
+                              labelText: 'Ten nguoi ay',
+                              prefixIcon: Icon(Icons.favorite_rounded),
+                            ),
+                            validator: _required,
+                          ),
+                          const SizedBox(height: 14),
+                          TextFormField(
+                            controller: _coupleCodeController,
+                            textInputAction: TextInputAction.next,
+                            decoration: const InputDecoration(
+                              labelText: 'Couple code',
+                              helperText: 'Nhap cung mot ma tren hai may.',
+                              prefixIcon: Icon(Icons.key_rounded),
+                            ),
+                            validator: _required,
+                          ),
+                          const SizedBox(height: 14),
+                          InkWell(
+                            borderRadius: BorderRadius.circular(22),
+                            onTap: _pickLoveStartDate,
+                            child: InputDecorator(
+                              decoration: const InputDecoration(
+                                labelText: 'Ngay yeu nhau',
+                                prefixIcon: Icon(Icons.calendar_month_rounded),
+                              ),
+                              child: Text(_formatDate(_loveStartDate)),
+                            ),
+                          ),
+                        ],
+                        if (_needsCode) ...[
+                          const SizedBox(height: 14),
+                          TextFormField(
+                            controller: _codeController,
+                            keyboardType: TextInputType.number,
+                            maxLength: 6,
+                            decoration: const InputDecoration(
+                              labelText: 'Ma xac thuc email',
+                              helperText: 'Kiem tra hop thu den hoac spam.',
+                              prefixIcon: Icon(Icons.verified_rounded),
+                            ),
+                            validator: _requiredCode,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -254,20 +295,37 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ],
                 const SizedBox(height: 24),
                 GlowButton(
-                  onPressed: _loading ? null : () => _submit(useEmail: false),
+                  onPressed: _loading ? null : _submit,
                   enabled: !_loading,
                   icon: _loading
                       ? Icons.hourglass_top_rounded
-                      : Icons.auto_awesome_rounded,
+                      : _needsCode
+                      ? Icons.verified_user_rounded
+                      : Icons.arrow_forward_rounded,
                   label: _loading
-                      ? 'Đang kết nối...'
-                      : 'Vào app không cần email',
+                      ? 'Dang ket noi...'
+                      : _needsCode
+                      ? 'Xac nhan ma'
+                      : isLogin
+                      ? 'Dang nhap'
+                      : 'Tao tai khoan',
                 ),
+                if (!isLogin && !_needsCode) ...[
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: _loading ? null : _submitAnonymous,
+                    icon: const Icon(Icons.phone_android_rounded),
+                    label: const Text('Dung tam khong email'),
+                  ),
+                ],
                 const SizedBox(height: 12),
-                OutlinedButton.icon(
-                  onPressed: _loading ? null : () => _submit(useEmail: true),
-                  icon: const Icon(Icons.login_rounded),
-                  label: const Text('Đăng nhập / tạo tài khoản email'),
+                Text(
+                  'API dang dung: ${widget.apiService.baseUrl}',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Colors.white.withValues(alpha: 0.48),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -279,7 +337,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   String? _required(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Không được để trống';
+      return 'Khong duoc de trong';
+    }
+    return null;
+  }
+
+  String? _requiredEmail(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty || !text.contains('@')) {
+      return 'Nhap email hop le';
+    }
+    return null;
+  }
+
+  String? _requiredPassword(String? value) {
+    if (value == null || value.length < 6) {
+      return 'Mat khau can it nhat 6 ky tu';
+    }
+    return null;
+  }
+
+  String? _requiredCode(String? value) {
+    if (!_needsCode) return null;
+    if (value == null || value.trim().length != 6) {
+      return 'Nhap ma 6 so';
     }
     return null;
   }
@@ -297,7 +378,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  Future<void> _submit({required bool useEmail}) async {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -308,25 +389,65 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
 
     try {
-      await widget.apiService.setBaseUrl(_apiUrlController.text);
       final email = _emailController.text.trim();
       final password = _passwordController.text;
+      final emailCode = _needsCode ? _codeController.text.trim() : null;
 
-      if (useEmail && (email.isEmpty || password.length < 6)) {
-        throw const ApiException(
-          'Email không được trống và mật khẩu cần ít nhất 6 ký tự.',
-        );
+      final session = _mode == _AuthMode.login
+          ? await widget.apiService.login(
+              email: email,
+              password: password,
+              emailCode: emailCode,
+            )
+          : await widget.apiService.start(
+              displayName: _nameController.text.trim(),
+              partnerName: _partnerController.text.trim(),
+              coupleCode: _normalizeCoupleCode(_coupleCodeController.text),
+              loveStartDate: _loveStartDate,
+              email: email,
+              password: password,
+              emailCode: emailCode,
+            );
+
+      widget.onComplete(session.user);
+    } on ApiException catch (error) {
+      if (error.requiresEmailCode && !_needsCode) {
+        await _sendCodeAfterRequirement();
+        return;
       }
+      if (!mounted) return;
+      setState(() => _error = error.message);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = error.toString());
+    } finally {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
+    }
+  }
 
+  Future<void> _submitAnonymous() async {
+    final name = _nameController.text.trim();
+    final partner = _partnerController.text.trim();
+    final coupleCode = _coupleCodeController.text.trim();
+    if (name.isEmpty || partner.isEmpty || coupleCode.isEmpty) {
+      setState(() => _error = 'Nhap ten va couple code truoc.');
+      return;
+    }
+
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    try {
       final session = await widget.apiService.start(
-        displayName: _nameController.text.trim(),
-        partnerName: _partnerController.text.trim(),
-        coupleCode: _normalizeCoupleCode(_coupleCodeController.text),
+        displayName: name,
+        partnerName: partner,
+        coupleCode: _normalizeCoupleCode(coupleCode),
         loveStartDate: _loveStartDate,
-        email: useEmail ? email : null,
-        password: useEmail ? password : null,
       );
-
       widget.onComplete(session.user);
     } catch (error) {
       if (!mounted) return;
@@ -335,6 +456,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (mounted) {
         setState(() => _loading = false);
       }
+    }
+  }
+
+  Future<void> _sendCodeAfterRequirement() async {
+    try {
+      await widget.apiService.requestAuthCode(
+        email: _emailController.text.trim(),
+      );
+      if (!mounted) return;
+      setState(() {
+        _needsCode = true;
+        _error = 'Da gui ma xac thuc toi email cua ban.';
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _error = error.toString());
     }
   }
 

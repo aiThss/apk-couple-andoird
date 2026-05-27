@@ -27,6 +27,19 @@ ADMIN_EMAIL=admin@tenmiencuaban.com
 ADMIN_PASSWORD=mat-khau-admin-that-manh
 ```
 
+Neu muon dung ma xac thuc email, them SMTP env sau trong Dokploy:
+
+```env
+SMTP_HOST=smtp-relay.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=
+SMTP_PASS=
+MAIL_FROM="Couple Snap <email-doanh-nghiep-cua-ban>"
+```
+
+Voi Google Workspace SMTP relay, co the de trong `SMTP_USER` va `SMTP_PASS` neu da cho phep IP VPS trong Google Admin.
+
 4. Gan domain cho service API, vi du:
 
 ```text

@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/app_user.dart';
 import '../services/api_service.dart';
@@ -43,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
               IconButton.filledTonal(
                 onPressed: () => _openEditSheet(context),
                 icon: const Icon(Icons.edit_rounded),
-                tooltip: 'Sửa thông tin',
+                tooltip: 'Sua thong tin',
               ),
             ],
           ),
@@ -55,29 +59,31 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    _Avatar(label: profile.displayName),
+                    _Avatar(
+                      label: profile.displayName,
+                      imageUrl: profile.avatarUrl,
+                      onTap: () => _pickAvatar(context, partner: false),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Container(
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: neonPink.withValues(alpha: 0.16),
+                          color: Colors.white.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: neonPink.withValues(alpha: 0.42),
-                              blurRadius: 20,
-                            ),
-                          ],
                         ),
                         child: const Icon(
                           Icons.favorite_rounded,
-                          color: neonPink,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                    _Avatar(label: profile.partnerName),
+                    _Avatar(
+                      label: profile.partnerName,
+                      imageUrl: profile.partnerAvatarUrl,
+                      onTap: () => _pickAvatar(context, partner: true),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 22),
@@ -92,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Đã yêu nhau ${profile.daysInLove} ngày',
+                  'Da yeu nhau ${profile.daysInLove} ngay',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: softPink,
                     fontWeight: FontWeight.w900,
@@ -104,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _InfoTile(
             icon: Icons.calendar_month_rounded,
-            label: 'Ngày yêu nhau',
+            label: 'Ngay yeu nhau',
             value: _formatDate(profile.loveStartDate),
           ),
           const SizedBox(height: 12),
@@ -115,25 +121,46 @@ class ProfileScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _InfoTile(
-            icon: Icons.cloud_done_rounded,
-            label: 'Cloud API',
-            value: apiService.baseUrl,
-          ),
-          const SizedBox(height: 12),
-          _InfoTile(
             icon: Icons.email_rounded,
-            label: 'Tài khoản',
-            value: profile.email ?? 'Ẩn danh trên thiết bị này',
+            label: 'Tai khoan',
+            value: profile.email ?? 'An danh tren thiet bi nay',
           ),
           const SizedBox(height: 22),
           OutlinedButton.icon(
             onPressed: onSignOut,
             icon: const Icon(Icons.logout_rounded),
-            label: const Text('Đăng xuất'),
+            label: const Text('Dang xuat'),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _pickAvatar(
+    BuildContext context, {
+    required bool partner,
+  }) async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 84,
+      maxWidth: 1000,
+    );
+    if (file == null) return;
+
+    try {
+      final updated = await apiService.uploadAvatar(
+        file: File(file.path),
+        partner: partner,
+      );
+      await dynamicThemeController.updateFromFile(File(file.path));
+      onProfileChanged(updated);
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
+    }
   }
 
   Future<void> _openEditSheet(BuildContext context) async {
@@ -209,7 +236,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Sửa thông tin',
+                'Sua thong tin',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
@@ -220,7 +247,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
-                  labelText: 'Tên của bạn',
+                  labelText: 'Ten cua ban',
                   prefixIcon: Icon(Icons.person_rounded),
                 ),
               ),
@@ -229,7 +256,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 controller: _partnerController,
                 textInputAction: TextInputAction.done,
                 decoration: const InputDecoration(
-                  labelText: 'Tên người ấy',
+                  labelText: 'Ten nguoi ay',
                   prefixIcon: Icon(Icons.favorite_rounded),
                 ),
               ),
@@ -239,7 +266,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 onTap: _pickLoveStartDate,
                 child: InputDecorator(
                   decoration: const InputDecoration(
-                    labelText: 'Ngày yêu nhau',
+                    labelText: 'Ngay yeu nhau',
                     prefixIcon: Icon(Icons.calendar_month_rounded),
                   ),
                   child: Text(_formatDate(_loveStartDate)),
@@ -264,7 +291,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   icon: _saving
                       ? Icons.hourglass_top_rounded
                       : Icons.save_rounded,
-                  label: _saving ? 'Đang lưu...' : 'Lưu',
+                  label: _saving ? 'Dang luu...' : 'Luu',
                 ),
               ),
             ],
@@ -291,7 +318,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     final name = _nameController.text.trim();
     final partner = _partnerController.text.trim();
     if (name.isEmpty || partner.isEmpty) {
-      setState(() => _error = 'Tên không được để trống.');
+      setState(() => _error = 'Ten khong duoc de trong.');
       return;
     }
 
@@ -328,9 +355,15 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
 }
 
 class _Avatar extends StatelessWidget {
-  const _Avatar({required this.label});
+  const _Avatar({
+    required this.label,
+    required this.imageUrl,
+    required this.onTap,
+  });
 
   final String label;
+  final String? imageUrl;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -339,30 +372,75 @@ class _Avatar extends StatelessWidget {
     return Expanded(
       child: AspectRatio(
         aspectRatio: 1,
-        child: Container(
-          decoration: BoxDecoration(
-            color: neonPink.withValues(alpha: 0.18),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: softPink.withValues(alpha: 0.78),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: neonPink.withValues(alpha: 0.28),
-                blurRadius: 24,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              initial,
-              style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(28),
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.24),
+                width: 2,
               ),
             ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(26),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (imageUrl != null && imageUrl!.isNotEmpty)
+                    CachedNetworkImage(
+                      imageUrl: imageUrl!,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          _InitialAvatar(initial: initial),
+                    )
+                  else
+                    _InitialAvatar(initial: initial),
+                  Positioned(
+                    right: 8,
+                    bottom: 8,
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.48),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.22),
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.photo_camera_rounded,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InitialAvatar extends StatelessWidget {
+  const _InitialAvatar({required this.initial});
+
+  final String initial;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        initial,
+        style: Theme.of(context).textTheme.displaySmall?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
         ),
       ),
     );
@@ -386,7 +464,7 @@ class _InfoTile extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       child: Row(
         children: [
-          Icon(icon, color: softPink),
+          Icon(icon, color: Colors.white70),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
@@ -395,7 +473,7 @@ class _InfoTile extends StatelessWidget {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: softPink.withValues(alpha: 0.78),
+                    color: Colors.white.withValues(alpha: 0.58),
                     fontWeight: FontWeight.w800,
                   ),
                 ),
