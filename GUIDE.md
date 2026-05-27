@@ -33,10 +33,28 @@ ADMIN_PASSWORD=mat-khau-admin-that-manh
 https://api.tenmiencuaban.com
 ```
 
+Trong Dokploy domain form:
+
+```text
+Service name: api
+Container port: 8080
+Path: /
+Internal path: /
+```
+
 5. Gan domain cho service admin, vi du:
 
 ```text
 https://admin.tenmiencuaban.com
+```
+
+Trong Dokploy domain form:
+
+```text
+Service name: admin
+Container port: 80
+Path: /
+Internal path: /
 ```
 
 6. Mo API health check:

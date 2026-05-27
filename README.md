@@ -9,7 +9,8 @@ For the practical setup and usage walkthrough, see [GUIDE.md](GUIDE.md).
 - `lib/`: Flutter mobile app.
 - `server/`: Express + TypeScript API with MongoDB models, JWT auth, couple setup, photo upload, and admin endpoints.
 - `admin/`: lightweight static admin web app.
-- `docker-compose.yml`: local/Dokploy-friendly stack for MongoDB, API, and admin.
+- `docker-compose.yml`: Dokploy-friendly stack for MongoDB, API, and admin.
+- `docker-compose.local.yml`: optional local override that publishes API/admin ports to localhost.
 
 ## Mobile Features
 
@@ -38,10 +39,10 @@ Create an env file:
 cp .env.example .env
 ```
 
-Start MongoDB, API, and admin:
+Start MongoDB, API, and admin locally:
 
 ```bash
-docker compose up --build
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
 ```
 
 Local URLs:
