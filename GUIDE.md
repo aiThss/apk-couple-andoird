@@ -183,6 +183,10 @@ build/app/outputs/flutter-apk/app-release.apk
 - Kiem tra `PUBLIC_BASE_URL` dung domain API that.
 - Kiem tra file anh khong vuot gioi han 10MB.
 
+### MongoDB co can domain rieng khong?
+
+Khong. MongoDB chi nen chay noi bo trong Docker network. Khong gan domain va khong publish port MongoDB ra internet.
+
 ### Quen mat khau admin
 
 - Doi `ADMIN_PASSWORD` trong Dokploy env.
