@@ -42,18 +42,18 @@ export async function sendVerificationEmail(email: string, code: string) {
   await mailer.sendMail({
     from: config.smtp.mailFrom,
     to: email,
-    subject: 'Your Couple Snap verification code',
+    subject: 'Mã xác thực Couple Snap',
     text: [
-      `Your Couple Snap code is ${code}.`,
+      `Mã xác thực Couple Snap của bạn là ${code}.`,
       '',
-      'This code expires in 10 minutes. If you did not request it, you can ignore this email.',
+      'Mã này hết hạn sau 10 phút. Nếu bạn không yêu cầu mã này, hãy bỏ qua email.',
     ].join('\n'),
     html: `
       <div style="font-family:Arial,sans-serif;line-height:1.5;color:#171717">
-        <h2>Couple Snap verification</h2>
-        <p>Your code is:</p>
+        <h2>Xác thực Couple Snap</h2>
+        <p>Mã của bạn là:</p>
         <p style="font-size:28px;font-weight:800;letter-spacing:6px">${code}</p>
-        <p>This code expires in 10 minutes.</p>
+        <p>Mã này hết hạn sau 10 phút.</p>
       </div>
     `,
   });

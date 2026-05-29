@@ -27,18 +27,18 @@ ADMIN_EMAIL=admin@tenmiencuaban.com
 ADMIN_PASSWORD=mat-khau-admin-that-manh
 ```
 
-Neu muon dung ma xac thuc email, them SMTP env sau trong Dokploy:
+Neu muon dung ma xac thuc email bang Gmail/Google Workspace App Password, them SMTP env sau trong Dokploy:
 
 ```env
-SMTP_HOST=smtp-relay.gmail.com
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_SECURE=false
-SMTP_USER=
-SMTP_PASS=
+SMTP_USER=email-doanh-nghiep-cua-ban
+SMTP_PASS=mat-khau-ung-dung-16-ky-tu
 MAIL_FROM="Couple Snap <email-doanh-nghiep-cua-ban>"
 ```
 
-Voi Google Workspace SMTP relay, co the de trong `SMTP_USER` va `SMTP_PASS` neu da cho phep IP VPS trong Google Admin.
+Neu dung port `465` thi doi `SMTP_SECURE=true`. Khong commit `SMTP_PASS` vao repo; chi dien trong Environment cua Dokploy roi redeploy API.
 
 4. Gan domain cho service API, vi du:
 

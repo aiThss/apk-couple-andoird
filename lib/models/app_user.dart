@@ -40,8 +40,8 @@ class AppUser {
     final couple = json['couple'] as Map<String, dynamic>?;
     return AppUser(
       uid: json['id'] as String? ?? '',
-      displayName: json['displayName'] as String? ?? 'Ban',
-      partnerName: json['partnerName'] as String? ?? 'Nguoi ay',
+      displayName: json['displayName'] as String? ?? 'Bạn',
+      partnerName: json['partnerName'] as String? ?? 'Người ấy',
       email: json['email'] as String?,
       avatarUrl: json['avatarUrl'] as String?,
       partnerAvatarUrl: json['partnerAvatarUrl'] as String?,

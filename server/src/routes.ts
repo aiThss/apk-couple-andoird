@@ -100,28 +100,28 @@ const adminLoginSchema = z.object({
 const randomCategories = [
   {
     key: 'question',
-    label: 'Cau hoi doi minh',
-    description: 'Mot cau hoi nho de hai nguoi noi chuyen that hon.',
+    label: 'Câu hỏi đôi mình',
+    description: 'Một câu hỏi nhỏ để hai người nói chuyện thật hơn.',
   },
   {
     key: 'challenge',
-    label: 'Thu thach snap',
-    description: 'Goi y chup mot khoanh khac de gui cho nguoi ay.',
+    label: 'Thử thách snap',
+    description: 'Gợi ý chụp một khoảnh khắc để gửi cho người ấy.',
   },
   {
     key: 'date',
-    label: 'Hom nay lam gi',
-    description: 'Mot y tuong hen ho hoac cung nhau lam gi do.',
+    label: 'Hôm nay làm gì',
+    description: 'Một ý tưởng hẹn hò hoặc cùng nhau làm gì đó.',
   },
   {
     key: 'food',
-    label: 'An gi bay gio',
-    description: 'De vu tru chon mon cho hai nguoi.',
+    label: 'Ăn gì bây giờ',
+    description: 'Để vũ trụ chọn món cho hai người.',
   },
   {
     key: 'cosmic',
-    label: 'Tin hieu vu tru',
-    description: 'Mot thong diep nhe nhang cho ngay hom nay.',
+    label: 'Tín hiệu vũ trụ',
+    description: 'Một thông điệp nhẹ nhàng cho ngày hôm nay.',
   },
 ] as const;
 
@@ -133,55 +133,55 @@ const randomPrompts: Record<
   }>
 > = {
   question: [
-    { prompt: 'Hom nay co dieu gi nho xiu lam em/anh vui khong?' },
-    { prompt: 'Neu duoc tua lai mot khoanh khac cua hai dua, ban chon luc nao?' },
-    { prompt: 'Dieu gi o nguoi ay lam ban thay yen tam nhat?' },
-    { prompt: 'Neu toi nay goi video 15 phut, ban muon ke chuyen gi dau tien?' },
-    { prompt: 'Mot loi khen that long ma ban muon gui cho nguoi ay la gi?' },
+    { prompt: 'Hôm nay có điều gì nhỏ xíu làm em/anh vui không?' },
+    { prompt: 'Nếu được tua lại một khoảnh khắc của hai đứa, bạn chọn lúc nào?' },
+    { prompt: 'Điều gì ở người ấy làm bạn thấy yên tâm nhất?' },
+    { prompt: 'Nếu tối nay gọi video 15 phút, bạn muốn kể chuyện gì đầu tiên?' },
+    { prompt: 'Một lời khen thật lòng mà bạn muốn gửi cho người ấy là gì?' },
   ],
   challenge: [
     {
-      prompt: 'Chup mot thu dang o ngay ben trai ban.',
-      detail: 'Caption goi y: "em/anh thay cai nay dau tien ne".',
+      prompt: 'Chụp một thứ đang ở ngay bên trái bạn.',
+      detail: 'Caption gợi ý: "em/anh thấy cái này đầu tiên nè".',
     },
     {
-      prompt: 'Gui mot snap voi bieu cam dang yeu nhat trong 3 giay.',
-      detail: 'Khong can dep, can that.',
+      prompt: 'Gửi một snap với biểu cảm đáng yêu nhất trong 3 giây.',
+      detail: 'Không cần đẹp, cần thật.',
     },
-    { prompt: 'Chup bau troi hoac anh sang gan ban nhat luc nay.' },
-    { prompt: 'Chup mot goc ban lam viec/hoc tap hien tai.' },
-    { prompt: 'Gui mot tam anh co trai tim an dau do trong khung hinh.' },
+    { prompt: 'Chụp bầu trời hoặc ánh sáng gần bạn nhất lúc này.' },
+    { prompt: 'Chụp một góc bàn làm việc/học tập hiện tại.' },
+    { prompt: 'Gửi một tấm ảnh có trái tim ẩn đâu đó trong khung hình.' },
   ],
   date: [
-    { prompt: 'Dat lich xem phim cung nhau toi nay.' },
-    { prompt: 'Di an mot mon ca hai lau roi chua an.' },
-    { prompt: 'Cung nhau di dao 20 phut va khong cam dien thoai.' },
-    { prompt: 'Viet cho nhau 3 dieu biet on trong ngay.' },
-    { prompt: 'Chon mot bai nhac lam nhac nen cho ngay hom nay.' },
+    { prompt: 'Đặt lịch xem phim cùng nhau tối nay.' },
+    { prompt: 'Đi ăn một món cả hai lâu rồi chưa ăn.' },
+    { prompt: 'Cùng nhau đi dạo 20 phút và không cầm điện thoại.' },
+    { prompt: 'Viết cho nhau 3 điều biết ơn trong ngày.' },
+    { prompt: 'Chọn một bài nhạc làm nhạc nền cho ngày hôm nay.' },
   ],
   food: [
-    { prompt: 'Pho hoac bun bo', detail: 'Mon am nong, hop luc can nap lai nang luong.' },
-    { prompt: 'Tra sua size nho', detail: 'Du vui, khong qua toi loi.' },
-    { prompt: 'Com tam', detail: 'Lua chon chac bung va de vui.' },
-    { prompt: 'Mi cay', detail: 'Neu hom nay can mot chut kich thich.' },
-    { prompt: 'Banh mi', detail: 'Nhanh, gon, khong can nghi nhieu.' },
+    { prompt: 'Phở hoặc bún bò', detail: 'Món ấm nóng, hợp lúc cần nạp lại năng lượng.' },
+    { prompt: 'Trà sữa size nhỏ', detail: 'Đủ vui, không quá tội lỗi.' },
+    { prompt: 'Cơm tấm', detail: 'Lựa chọn chắc bụng và dễ vui.' },
+    { prompt: 'Mì cay', detail: 'Nếu hôm nay cần một chút kích thích.' },
+    { prompt: 'Bánh mì', detail: 'Nhanh, gọn, không cần nghĩ nhiều.' },
   ],
   cosmic: [
     {
-      prompt: 'Hom nay hay noi mot cau nhe nhang voi nguoi ay truoc khi ngu.',
-      detail: 'Mot tin nhan nho doi khi giu ca ngay lai.',
+      prompt: 'Hôm nay hãy nói một câu nhẹ nhàng với người ấy trước khi ngủ.',
+      detail: 'Một tin nhắn nhỏ đôi khi giữ cả ngày lại.',
     },
     {
-      prompt: 'Vu tru bao rang hai dua nen chup them mot tam anh binh thuong.',
-      detail: 'Nhung tam binh thuong thuong la ky niem lau nhat.',
+      prompt: 'Vũ trụ bảo rằng hai đứa nên chụp thêm một tấm ảnh bình thường.',
+      detail: 'Những tấm bình thường thường là kỷ niệm lâu nhất.',
     },
     {
-      prompt: 'Dung doi dung luc moi gui yeu thuong.',
-      detail: 'Gui ngay khi nghi toi.',
+      prompt: 'Đừng đợi đúng lúc mới gửi yêu thương.',
+      detail: 'Gửi ngay khi nghĩ tới.',
     },
     {
-      prompt: 'Neu hom nay met, chi can noi that la minh met.',
-      detail: 'Rieng tu va an toan la ly do app nay ton tai.',
+      prompt: 'Nếu hôm nay mệt, chỉ cần nói thật là mình mệt.',
+      detail: 'Riêng tư và an toàn là lý do app này tồn tại.',
     },
   ],
 };
@@ -625,7 +625,7 @@ router.post('/photos', requireUser, upload.single('photo'), async (req, res, nex
       throw new HttpError(400, 'Photo file is required');
     }
 
-    const caption = String(req.body.caption ?? '').trim() || 'A new snap';
+    const caption = String(req.body.caption ?? '').trim() || 'Một snap mới';
     const { publicPath, imageUrl } = filePublicUrl(req, req.file);
     const photo = await Photo.create({
       coupleId: user.coupleId,

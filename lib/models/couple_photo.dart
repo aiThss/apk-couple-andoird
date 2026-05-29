@@ -26,10 +26,10 @@ class CouplePhoto {
       id: json['id'] as String? ?? '',
       coupleId: json['coupleId'] as String? ?? '',
       ownerId: json['ownerId'] as String? ?? '',
-      ownerName: json['ownerName'] as String? ?? 'Nguoi ay',
+      ownerName: json['ownerName'] as String? ?? 'Người ấy',
       imageUrl: json['imageUrl'] as String? ?? '',
       storagePath: json['storagePath'] as String? ?? '',
-      caption: json['caption'] as String? ?? 'Mot khoanh khac moi',
+      caption: json['caption'] as String? ?? 'Một khoảnh khắc mới',
       createdAt: _dateFrom(json['createdAt']) ?? DateTime.now(),
     );
   }

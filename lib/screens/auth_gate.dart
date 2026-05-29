@@ -54,11 +54,11 @@ class _AuthGateState extends State<AuthGate> {
       return Scaffold(
         body: StateMessage(
           icon: Icons.block_rounded,
-          title: 'Tai khoan da bi khoa',
-          message: 'Lien he admin de mo khoa tai khoan nay.',
+          title: 'Tài khoản đã bị khóa',
+          message: 'Liên hệ admin để mở khóa tài khoản này.',
           action: FilledButton(
             onPressed: _signOut,
-            child: const Text('Dang xuat'),
+            child: const Text('Đăng xuất'),
           ),
         ),
       );

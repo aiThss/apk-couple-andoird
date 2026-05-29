@@ -34,7 +34,7 @@ class AppTheme {
         titleTextStyle: TextStyle(
           color: Colors.white,
           fontSize: 20,
-          fontWeight: FontWeight.w900,
+          fontWeight: FontWeight.w800,
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
@@ -51,7 +51,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(22),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-          textStyle: const TextStyle(fontWeight: FontWeight.w900),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -62,7 +62,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(22),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
-          textStyle: const TextStyle(fontWeight: FontWeight.w800),
+          textStyle: const TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -102,7 +102,7 @@ class AppTheme {
           return null;
         }),
       ),
-      textTheme: Typography.whiteCupertino.apply(
+      textTheme: Typography.whiteMountainView.apply(
         bodyColor: Colors.white,
         displayColor: Colors.white,
       ),

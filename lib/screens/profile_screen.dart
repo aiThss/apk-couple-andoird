@@ -47,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
               IconButton.filledTonal(
                 onPressed: () => _openEditSheet(context),
                 icon: const Icon(Icons.edit_rounded),
-                tooltip: 'Sua thong tin',
+                tooltip: 'Sửa thông tin',
               ),
             ],
           ),
@@ -98,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Da yeu nhau ${profile.daysInLove} ngay',
+                  'Đã yêu nhau ${profile.daysInLove} ngày',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: softPink,
                     fontWeight: FontWeight.w900,
@@ -110,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 16),
           _InfoTile(
             icon: Icons.calendar_month_rounded,
-            label: 'Ngay yeu nhau',
+            label: 'Ngày yêu nhau',
             value: _formatDate(profile.loveStartDate),
           ),
           const SizedBox(height: 12),
@@ -122,14 +122,14 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 12),
           _InfoTile(
             icon: Icons.email_rounded,
-            label: 'Tai khoan',
-            value: profile.email ?? 'An danh tren thiet bi nay',
+            label: 'Tài khoản',
+            value: profile.email ?? 'Ẩn danh trên thiết bị này',
           ),
           const SizedBox(height: 22),
           OutlinedButton.icon(
             onPressed: onSignOut,
             icon: const Icon(Icons.logout_rounded),
-            label: const Text('Dang xuat'),
+            label: const Text('Đăng xuất'),
           ),
         ],
       ),
@@ -236,7 +236,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Sua thong tin',
+                'Sửa thông tin',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
@@ -247,7 +247,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 controller: _nameController,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
-                  labelText: 'Ten cua ban',
+                  labelText: 'Tên của bạn',
                   prefixIcon: Icon(Icons.person_rounded),
                 ),
               ),
@@ -256,7 +256,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 controller: _partnerController,
                 textInputAction: TextInputAction.done,
                 decoration: const InputDecoration(
-                  labelText: 'Ten nguoi ay',
+                  labelText: 'Tên người ấy',
                   prefixIcon: Icon(Icons.favorite_rounded),
                 ),
               ),
@@ -266,7 +266,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                 onTap: _pickLoveStartDate,
                 child: InputDecorator(
                   decoration: const InputDecoration(
-                    labelText: 'Ngay yeu nhau',
+                    labelText: 'Ngày yêu nhau',
                     prefixIcon: Icon(Icons.calendar_month_rounded),
                   ),
                   child: Text(_formatDate(_loveStartDate)),
@@ -291,7 +291,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
                   icon: _saving
                       ? Icons.hourglass_top_rounded
                       : Icons.save_rounded,
-                  label: _saving ? 'Dang luu...' : 'Luu',
+                  label: _saving ? 'Đang lưu...' : 'Lưu',
                 ),
               ),
             ],
@@ -318,7 +318,7 @@ class _EditProfileSheetState extends State<_EditProfileSheet> {
     final name = _nameController.text.trim();
     final partner = _partnerController.text.trim();
     if (name.isEmpty || partner.isEmpty) {
-      setState(() => _error = 'Ten khong duoc de trong.');
+      setState(() => _error = 'Tên không được để trống.');
       return;
     }
 

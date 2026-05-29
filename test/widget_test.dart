@@ -19,6 +19,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text('Couple Snap'), findsOneWidget);
-    expect(find.text('Setup couple cua hai nguoi'), findsOneWidget);
+    expect(find.text('Setup couple của hai người'), findsOneWidget);
   });
 }

@@ -53,20 +53,20 @@ class _RandomScreenState extends State<RandomScreen> {
     if (_loading) {
       return const StateMessage(
         icon: Icons.auto_awesome_rounded,
-        title: 'Dang mo Random',
-        message: 'Couple Snap dang lay tin hieu dau tien.',
+        title: 'Đang mở Random',
+        message: 'Couple Snap đang lấy tín hiệu đầu tiên.',
       );
     }
 
     if (_error != null) {
       return StateMessage(
         icon: Icons.error_outline_rounded,
-        title: 'Khong tai duoc Random',
+        title: 'Không tải được Random',
         message: _error.toString(),
         action: GlowButton(
           onPressed: _load,
           icon: Icons.refresh_rounded,
-          label: 'Thu lai',
+          label: 'Thử lại',
         ),
       );
     }
@@ -88,7 +88,7 @@ class _RandomScreenState extends State<RandomScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Cau hoi, thu thach snap va tin hieu nho cho hai nguoi.',
+              'Câu hỏi, thử thách snap và tín hiệu nhỏ cho hai người.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Colors.white.withValues(alpha: 0.64),
                 fontWeight: FontWeight.w700,
@@ -131,12 +131,12 @@ class _RandomScreenState extends State<RandomScreen> {
               icon: _drawing
                   ? Icons.hourglass_top_rounded
                   : Icons.auto_awesome_rounded,
-              label: _drawing ? 'Dang boc tham...' : 'Random ngay',
+              label: _drawing ? 'Đang bốc thăm...' : 'Random ngay',
             ),
             if (_history.isNotEmpty) ...[
               const SizedBox(height: 28),
               Text(
-                'Gan day',
+                'Gần đây',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
@@ -226,7 +226,7 @@ class _EmptyRandomCard extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Chua co tin hieu nao',
+          'Chưa có tín hiệu nào',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: Colors.white,
@@ -235,7 +235,7 @@ class _EmptyRandomCard extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'Bam Random ngay de boc mot goi y cho hai nguoi.',
+          'Bấm Random ngay để bốc một gợi ý cho hai người.',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: Colors.white.withValues(alpha: 0.58),

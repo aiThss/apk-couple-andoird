@@ -133,7 +133,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 ),
                           ),
                           Text(
-                            'Private snaps for two.',
+                            'Snap riêng tư cho hai người.',
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   color: Colors.white.withValues(alpha: 0.62),
@@ -150,12 +150,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   segments: const [
                     ButtonSegment(
                       value: _AuthMode.setup,
-                      label: Text('Tao tai khoan'),
+                      label: Text('Tạo tài khoản'),
                       icon: Icon(Icons.favorite_rounded),
                     ),
                     ButtonSegment(
                       value: _AuthMode.login,
-                      label: Text('Dang nhap'),
+                      label: Text('Đăng nhập'),
                       icon: Icon(Icons.login_rounded),
                     ),
                   ],
@@ -173,7 +173,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
                 const SizedBox(height: 22),
                 Text(
-                  isLogin ? 'Dang nhap may nay' : 'Setup couple cua hai nguoi',
+                  isLogin ? 'Đăng nhập máy này' : 'Setup couple của hai người',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
@@ -183,8 +183,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 const SizedBox(height: 8),
                 Text(
                   isLogin
-                      ? 'May moi se can them ma xac thuc gui qua email.'
-                      : 'Hai may dung cung couple code de thay snap cua nhau.',
+                      ? 'Máy mới sẽ cần thêm mã xác thực gửi qua email.'
+                      : 'Hai máy dùng cùng couple code để thấy snap của nhau.',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Colors.white.withValues(alpha: 0.66),
                     fontWeight: FontWeight.w700,
@@ -215,7 +215,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ? TextInputAction.done
                               : TextInputAction.next,
                           decoration: const InputDecoration(
-                            labelText: 'Mat khau',
+                            labelText: 'Mật khẩu',
                             prefixIcon: Icon(Icons.lock_rounded),
                           ),
                           validator: _requiredPassword,
@@ -226,7 +226,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             controller: _nameController,
                             textInputAction: TextInputAction.next,
                             decoration: const InputDecoration(
-                              labelText: 'Ten cua ban',
+                              labelText: 'Tên của bạn',
                               prefixIcon: Icon(Icons.person_rounded),
                             ),
                             validator: _required,
@@ -236,7 +236,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             controller: _partnerController,
                             textInputAction: TextInputAction.next,
                             decoration: const InputDecoration(
-                              labelText: 'Ten nguoi ay',
+                              labelText: 'Tên người ấy',
                               prefixIcon: Icon(Icons.favorite_rounded),
                             ),
                             validator: _required,
@@ -247,7 +247,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             textInputAction: TextInputAction.next,
                             decoration: const InputDecoration(
                               labelText: 'Couple code',
-                              helperText: 'Nhap cung mot ma tren hai may.',
+                              helperText: 'Nhập cùng một mã trên hai máy.',
                               prefixIcon: Icon(Icons.key_rounded),
                             ),
                             validator: _required,
@@ -258,7 +258,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             onTap: _pickLoveStartDate,
                             child: InputDecorator(
                               decoration: const InputDecoration(
-                                labelText: 'Ngay yeu nhau',
+                                labelText: 'Ngày yêu nhau',
                                 prefixIcon: Icon(Icons.calendar_month_rounded),
                               ),
                               child: Text(_formatDate(_loveStartDate)),
@@ -272,8 +272,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             keyboardType: TextInputType.number,
                             maxLength: 6,
                             decoration: const InputDecoration(
-                              labelText: 'Ma xac thuc email',
-                              helperText: 'Kiem tra hop thu den hoac spam.',
+                              labelText: 'Mã xác thực email',
+                              helperText: 'Kiểm tra hộp thư đến hoặc spam.',
                               prefixIcon: Icon(Icons.verified_rounded),
                             ),
                             validator: _requiredCode,
@@ -303,24 +303,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ? Icons.verified_user_rounded
                       : Icons.arrow_forward_rounded,
                   label: _loading
-                      ? 'Dang ket noi...'
+                      ? 'Đang kết nối...'
                       : _needsCode
-                      ? 'Xac nhan ma'
+                      ? 'Xác nhận mã'
                       : isLogin
-                      ? 'Dang nhap'
-                      : 'Tao tai khoan',
+                      ? 'Đăng nhập'
+                      : 'Tạo tài khoản',
                 ),
                 if (!isLogin && !_needsCode) ...[
                   const SizedBox(height: 12),
                   OutlinedButton.icon(
                     onPressed: _loading ? null : _submitAnonymous,
                     icon: const Icon(Icons.phone_android_rounded),
-                    label: const Text('Dung tam khong email'),
+                    label: const Text('Dùng tạm không email'),
                   ),
                 ],
                 const SizedBox(height: 12),
                 Text(
-                  'API dang dung: ${widget.apiService.baseUrl}',
+                  'API đang dùng: ${widget.apiService.baseUrl}',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: Colors.white.withValues(alpha: 0.48),
@@ -337,7 +337,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   String? _required(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Khong duoc de trong';
+      return 'Không được để trống';
     }
     return null;
   }
@@ -345,14 +345,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String? _requiredEmail(String? value) {
     final text = value?.trim() ?? '';
     if (text.isEmpty || !text.contains('@')) {
-      return 'Nhap email hop le';
+      return 'Nhập email hợp lệ';
     }
     return null;
   }
 
   String? _requiredPassword(String? value) {
     if (value == null || value.length < 6) {
-      return 'Mat khau can it nhat 6 ky tu';
+      return 'Mật khẩu cần ít nhất 6 ký tự';
     }
     return null;
   }
@@ -360,7 +360,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String? _requiredCode(String? value) {
     if (!_needsCode) return null;
     if (value == null || value.trim().length != 6) {
-      return 'Nhap ma 6 so';
+      return 'Nhập mã 6 số';
     }
     return null;
   }
@@ -432,7 +432,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final partner = _partnerController.text.trim();
     final coupleCode = _coupleCodeController.text.trim();
     if (name.isEmpty || partner.isEmpty || coupleCode.isEmpty) {
-      setState(() => _error = 'Nhap ten va couple code truoc.');
+      setState(() => _error = 'Nhập tên và couple code trước.');
       return;
     }
 
@@ -467,7 +467,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (!mounted) return;
       setState(() {
         _needsCode = true;
-        _error = 'Da gui ma xac thuc toi email cua ban.';
+        _error = 'Đã gửi mã xác thực tới email của bạn.';
       });
     } catch (error) {
       if (!mounted) return;

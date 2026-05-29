@@ -29,7 +29,7 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   final _picker = ImagePicker();
-  final _captionController = TextEditingController(text: 'Gui ban mot snap ne');
+  final _captionController = TextEditingController(text: 'Gửi bạn một snap nè');
 
   List<CameraDescription> _cameras = const [];
   CameraController? _controller;
@@ -71,90 +71,91 @@ class _CameraScreenState extends State<CameraScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 132),
-                children: [
-                  Row(
-                    children: [
-                      IconButton.filledTonal(
-                        onPressed: () => Navigator.of(context).maybePop(),
-                        icon: const Icon(Icons.close_rounded),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+            final frameHeight =
+                (constraints.maxHeight * (keyboardOpen ? 0.5 : 0.62)).clamp(
+                  300.0,
+                  520.0,
+                );
+
+            return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 32,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton.filledTonal(
+                          onPressed: () => Navigator.of(context).maybePop(),
+                          icon: const Icon(Icons.close_rounded),
+                        ),
+                        const Spacer(),
+                        IconButton.filledTonal(
+                          onPressed: _capturedFile == null
+                              ? _toggleFlash
+                              : null,
+                          icon: Icon(
+                            _flashOn
+                                ? Icons.flash_on_rounded
+                                : Icons.flash_off_rounded,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton.filledTonal(
+                          onPressed: _capturedFile == null
+                              ? _switchCamera
+                              : null,
+                          icon: const Icon(Icons.cameraswitch_rounded),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    SizedBox(
+                      height: frameHeight,
+                      child: _CameraFrame(
+                        controller: _controller,
+                        capturedFile: _capturedFile,
+                        initializing: _initializing,
+                        error: _error,
+                        onRetry: _initCamera,
                       ),
-                      const Spacer(),
-                      IconButton.filledTonal(
-                        onPressed: _capturedFile == null ? _toggleFlash : null,
-                        icon: Icon(
-                          _flashOn
-                              ? Icons.flash_on_rounded
-                              : Icons.flash_off_rounded,
+                    ),
+                    const SizedBox(height: 14),
+                    _CaptureDock(
+                      captionController: _captionController,
+                      hasCapture: _capturedFile != null,
+                      uploading: _uploading,
+                      onGallery: _uploading ? null : _pickFromGallery,
+                      onCapture: _uploading ? null : _capture,
+                      onRetake: _uploading ? null : _retake,
+                      onSend: _uploading || _capturedFile == null
+                          ? null
+                          : _uploadPicked,
+                    ),
+                    if (_error != null && !_initializing) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        _error!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      IconButton.filledTonal(
-                        onPressed: _capturedFile == null ? _switchCamera : null,
-                        icon: const Icon(Icons.cameraswitch_rounded),
-                      ),
                     ],
-                  ),
-                  const SizedBox(height: 14),
-                  _CameraFrame(
-                    controller: _controller,
-                    capturedFile: _capturedFile,
-                    initializing: _initializing,
-                    error: _error,
-                    onRetry: _initCamera,
-                  ),
-                  const SizedBox(height: 16),
-                  GlassCard(
-                    borderRadius: 22,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 4,
-                    ),
-                    child: TextField(
-                      controller: _captionController,
-                      maxLength: 80,
-                      decoration: const InputDecoration(
-                        labelText: 'Caption',
-                        counterText: '',
-                        prefixIcon: Icon(Icons.chat_bubble_rounded),
-                      ),
-                    ),
-                  ),
-                  if (_error != null && !_initializing) ...[
-                    const SizedBox(height: 10),
-                    Text(
-                      _error!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
                   ],
-                ],
+                ),
               ),
-            ),
-            Positioned(
-              left: 18,
-              right: 18,
-              bottom: 18,
-              child: _CaptureDock(
-                hasCapture: _capturedFile != null,
-                uploading: _uploading,
-                onGallery: _uploading ? null : _pickFromGallery,
-                onCapture: _uploading ? null : _capture,
-                onRetake: _uploading ? null : _retake,
-                onSend: _uploading || _capturedFile == null
-                    ? null
-                    : _uploadPicked,
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -169,7 +170,7 @@ class _CameraScreenState extends State<CameraScreen>
     try {
       _cameras = await availableCameras();
       if (_cameras.isEmpty) {
-        throw CameraException('no_camera', 'No camera found');
+        throw CameraException('no_camera', 'Không tìm thấy camera');
       }
 
       final camera = _cameras.firstWhere(
@@ -180,7 +181,7 @@ class _CameraScreenState extends State<CameraScreen>
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _error = 'Khong mo duoc camera: $error';
+        _error = 'Không mở được camera: $error';
         _initializing = false;
       });
     }
@@ -237,7 +238,7 @@ class _CameraScreenState extends State<CameraScreen>
       await widget.dynamicThemeController.updateFromFile(File(file.path));
     } catch (error) {
       if (!mounted) return;
-      setState(() => _error = 'Chup anh that bai: $error');
+      setState(() => _error = 'Chụp ảnh thất bại: $error');
     }
   }
 
@@ -274,7 +275,7 @@ class _CameraScreenState extends State<CameraScreen>
 
     try {
       final caption = _captionController.text.trim().isEmpty
-          ? 'Mot khoanh khac moi'
+          ? 'Một khoảnh khắc mới'
           : _captionController.text.trim();
 
       final photo = await widget.apiService.uploadPhoto(
@@ -328,8 +329,7 @@ class _CameraFrame extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
-        child: AspectRatio(
-          aspectRatio: 0.76,
+        child: SizedBox.expand(
           child: capturedFile != null
               ? Image.file(File(capturedFile!.path), fit: BoxFit.cover)
               : _buildPreview(context),
@@ -357,7 +357,7 @@ class _CameraFrame extends StatelessWidget {
           child: GlowButton(
             onPressed: onRetry,
             icon: Icons.refresh_rounded,
-            label: 'Mo lai camera',
+            label: 'Mở lại camera',
           ),
         ),
       );
@@ -377,6 +377,7 @@ class _CameraFrame extends StatelessWidget {
 
 class _CaptureDock extends StatelessWidget {
   const _CaptureDock({
+    required this.captionController,
     required this.hasCapture,
     required this.uploading,
     required this.onGallery,
@@ -385,6 +386,7 @@ class _CaptureDock extends StatelessWidget {
     required this.onSend,
   });
 
+  final TextEditingController captionController;
   final bool hasCapture;
   final bool uploading;
   final VoidCallback? onGallery;
@@ -397,67 +399,83 @@ class _CaptureDock extends StatelessWidget {
     return GlassCard(
       borderRadius: 28,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: hasCapture
-          ? Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onRetake,
-                    icon: const Icon(Icons.replay_rounded),
-                    label: const Text('Chup lai'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: onSend,
-                    icon: Icon(
-                      uploading
-                          ? Icons.hourglass_top_rounded
-                          : Icons.send_rounded,
-                    ),
-                    label: Text(uploading ? 'Dang gui' : 'Gui'),
-                  ),
-                ),
-              ],
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton.filledTonal(
-                  onPressed: onGallery,
-                  icon: const Icon(Icons.photo_library_rounded),
-                ),
-                GestureDetector(
-                  onTap: onCapture,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 160),
-                    width: 86,
-                    height: 86,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.72),
-                        width: 6,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.34),
-                          blurRadius: 24,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt_rounded,
-                      color: Colors.black,
-                      size: 34,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 48),
-              ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: captionController,
+            maxLength: 80,
+            textInputAction: TextInputAction.done,
+            decoration: const InputDecoration(
+              labelText: 'Caption',
+              counterText: '',
+              prefixIcon: Icon(Icons.chat_bubble_rounded),
             ),
+          ),
+          const SizedBox(height: 12),
+          hasCapture
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: onRetake,
+                        icon: const Icon(Icons.replay_rounded),
+                        label: const Text('Chụp lại'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: onSend,
+                        icon: Icon(
+                          uploading
+                              ? Icons.hourglass_top_rounded
+                              : Icons.send_rounded,
+                        ),
+                        label: Text(uploading ? 'Đang gửi' : 'Gửi'),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton.filledTonal(
+                      onPressed: onGallery,
+                      icon: const Icon(Icons.photo_library_rounded),
+                    ),
+                    GestureDetector(
+                      onTap: onCapture,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        width: 82,
+                        height: 82,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.72),
+                            width: 6,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withValues(alpha: 0.34),
+                              blurRadius: 24,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt_rounded,
+                          color: Colors.black,
+                          size: 34,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 48),
+                  ],
+                ),
+        ],
+      ),
     );
   }
 }

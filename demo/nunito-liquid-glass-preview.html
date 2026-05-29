@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Couple Snap - Instagram Typography Preview</title>
+    <style>
+      :root {
+        --bg: #08040d;
+        --plum: #2c061f;
+        --wine: #5d103f;
+        --glass: rgb(255 255 255 / 0.1);
+        --glass-strong: rgb(255 255 255 / 0.18);
+        --line: rgb(255 255 255 / 0.18);
+        --text: #fff;
+        --muted: rgb(255 255 255 / 0.68);
+        --soft: #d8cbd4;
+        --accent: #f7d6e8;
+        --shadow: rgb(0 0 0 / 0.48);
+        --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 28% 8%, rgb(126 19 83 / 0.48), transparent 34rem),
+          radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.08), transparent 22rem),
+          linear-gradient(135deg, #120012, #09030d 62%, #040205);
+        color: var(--text);
+        font-family: var(--font);
+        letter-spacing: 0;
+      }
+
+      .page {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      .intro {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 22px;
+      }
+
+      .intro h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.05;
+        font-weight: 800;
+      }
+
+      .intro p {
+        max-width: 760px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.45;
+        font-weight: 500;
+      }
+
+      .screens {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .phone {
+        position: relative;
+        overflow: hidden;
+        min-height: 760px;
+        border: 1px solid rgb(255 255 255 / 0.16);
+        border-radius: 34px;
+        background:
+          radial-gradient(circle at 72% 8%, rgb(255 255 255 / 0.08), transparent 13rem),
+          radial-gradient(circle at 30% 0%, rgb(128 19 84 / 0.5), transparent 19rem),
+          linear-gradient(180deg, #220018, #09030c 78%);
+        box-shadow: 0 28px 70px var(--shadow);
+      }
+
+      .phone::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+        background-size: 18px 18px;
+        mask-image: radial-gradient(circle at 50% 16%, black, transparent 70%);
+        pointer-events: none;
+      }
+
+      .status {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        padding: 16px 22px 8px;
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .content {
+        position: relative;
+        padding: 24px;
+      }
+
+      .title {
+        margin: 0;
+        font-size: 34px;
+        line-height: 1.06;
+        font-weight: 800;
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
+      .glass {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: linear-gradient(145deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.06));
+        box-shadow: 0 18px 48px rgb(0 0 0 / 0.34);
+        backdrop-filter: blur(26px);
+      }
+
+      .camera-preview {
+        height: 470px;
+        margin-top: 20px;
+        overflow: hidden;
+        border-radius: 28px;
+        background:
+          linear-gradient(90deg, #f9f4ea 0 18%, transparent 18%),
+          linear-gradient(112deg, #1d1d1b, #070707 54%, #2b241e);
+        border: 1px solid rgb(255 255 255 / 0.14);
+      }
+
+      .camera-dock {
+        display: grid;
+        grid-template-columns: 54px 1fr 54px;
+        align-items: center;
+        gap: 14px;
+        margin-top: 12px;
+        padding: 12px;
+      }
+
+      .caption-field {
+        min-width: 0;
+        border: 0;
+        outline: 0;
+        border-radius: 20px;
+        background: rgb(255 255 255 / 0.12);
+        color: white;
+        padding: 13px 14px;
+        font: 600 15px var(--font);
+      }
+
+      .caption-field::placeholder {
+        color: rgb(255 255 255 / 0.52);
+      }
+
+      .round {
+        display: grid;
+        place-items: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.13);
+        color: white;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .capture {
+        width: 76px;
+        height: 76px;
+        justify-self: center;
+        border-radius: 999px;
+        background: white;
+        color: black;
+        font-size: 34px;
+        box-shadow: 0 0 0 7px rgb(255 255 255 / 0.22);
+      }
+
+      .keyboard-space {
+        margin-top: 14px;
+        border-radius: 22px;
+        background: rgb(255 255 255 / 0.08);
+        padding: 12px;
+        color: rgb(255 255 255 / 0.5);
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 22px 0;
+      }
+
+      .chip {
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        background: rgb(255 255 255 / 0.06);
+        color: var(--text);
+        padding: 12px 16px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .chip.active {
+        background: rgb(255 255 255 / 0.2);
+        color: white;
+      }
+
+      .random-card {
+        margin-top: 14px;
+        padding: 26px;
+        min-height: 210px;
+        display: grid;
+        align-content: center;
+      }
+
+      .random-card h2 {
+        margin: 0;
+        font-size: 27px;
+        line-height: 1.16;
+        font-weight: 800;
+      }
+
+      .primary {
+        width: 100%;
+        margin-top: 18px;
+        border: 1px solid rgb(255 255 255 / 0.28);
+        border-radius: 24px;
+        background: linear-gradient(145deg, rgb(255 255 255 / 0.24), rgb(255 255 255 / 0.12));
+        color: white;
+        padding: 17px;
+        font: 700 16px var(--font);
+        box-shadow: 0 18px 42px rgb(0 0 0 / 0.28);
+      }
+
+      .profile-card {
+        margin-top: 22px;
+        padding: 28px 22px;
+      }
+
+      .avatars {
+        display: grid;
+        grid-template-columns: 1fr 56px 1fr;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .avatar {
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 28px;
+        border: 1px solid rgb(255 255 255 / 0.24);
+        background:
+          radial-gradient(circle at 50% 32%, rgb(255 255 255 / 0.22), transparent 38%),
+          linear-gradient(145deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0.08));
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 42px;
+        font-weight: 800;
+      }
+
+      .heart {
+        display: grid;
+        place-items: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 18px;
+        background: rgb(255 255 255 / 0.14);
+        font-size: 26px;
+      }
+
+      .couple-name {
+        margin: 22px 0 4px;
+        text-align: center;
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .days {
+        margin: 0;
+        text-align: center;
+        color: var(--accent);
+        font-size: 19px;
+        font-weight: 700;
+      }
+
+      .info {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .tile {
+        display: grid;
+        grid-template-columns: 44px 1fr;
+        align-items: center;
+        gap: 12px;
+        padding: 18px;
+      }
+
+      .tile b {
+        display: block;
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 3px;
+      }
+
+      .tile strong {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .nav {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+        padding: 8px;
+        border-radius: 28px;
+      }
+
+      .nav-item {
+        display: grid;
+        place-items: center;
+        gap: 4px;
+        min-width: 0;
+        height: 58px;
+        border-radius: 22px;
+        color: rgb(255 255 255 / 0.58);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .nav-item.active {
+        color: white;
+        background: rgb(255 255 255 / 0.2);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
+      }
+
+      .nav-item span:first-child {
+        font-size: 20px;
+      }
+
+      @media (max-width: 980px) {
+        .screens {
+          grid-template-columns: 1fr;
+        }
+
+        .phone {
+          min-height: 720px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="intro">
+        <h1>Preview Instagram Typography + Liquid Glass</h1>
+        <p>
+          Demo này bỏ Nunito và chuyển sang system font stack kiểu Instagram: gọn, chắc,
+          ít tròn hơn, dễ đọc tiếng Việt hơn. Caption vẫn nằm trong dock riêng để không bị
+          khung camera che khi bàn phím bật.
+        </p>
+      </section>
+
+      <section class="screens">
+        <article class="phone">
+          <div class="status"><span>13:39</span><span>Wi-Fi 50%</span></div>
+          <div class="content">
+            <h2 class="title">Camera</h2>
+            <p class="subtitle">Chụp nhanh, nhập caption ngay bên dưới khung hình.</p>
+            <div class="camera-preview"></div>
+            <div class="camera-dock glass">
+              <div class="round">▧</div>
+              <input class="caption-field" value="Gửi bạn một snap nè" />
+              <div class="round capture">●</div>
+            </div>
+            <div class="keyboard-space">Khi bàn phím mở, dock caption nằm trên keyboard, không che nội dung.</div>
+          </div>
+        </article>
+
+        <article class="phone">
+          <div class="status"><span>13:39</span><span>4G+ 49%</span></div>
+          <div class="content">
+            <h2 class="title">Random</h2>
+            <p class="subtitle">Câu hỏi, thử thách snap và tín hiệu nhỏ cho hai người.</p>
+            <div class="chips">
+              <button class="chip active">✓ Câu hỏi đôi mình</button>
+              <button class="chip">Thử thách snap</button>
+              <button class="chip">Hôm nay làm gì</button>
+              <button class="chip">Ăn gì bây giờ</button>
+              <button class="chip">Tín hiệu vũ trụ</button>
+            </div>
+            <div class="random-card glass">
+              <h2>Một lời khen thật lòng mà bạn muốn gửi cho người ấy là gì?</h2>
+            </div>
+            <button class="primary">✦ Random ngay</button>
+          </div>
+          <nav class="nav glass">
+            <div class="nav-item"><span>⌂</span><span>Home</span></div>
+            <div class="nav-item"><span>▦</span><span>Memories</span></div>
+            <div class="nav-item active"><span>✦</span><span>Random</span></div>
+            <div class="nav-item"><span>●</span><span>Profile</span></div>
+          </nav>
+        </article>
+
+        <article class="phone">
+          <div class="status"><span>13:39</span><span>4G+ 49%</span></div>
+          <div class="content">
+            <h2 class="title">Profile</h2>
+            <section class="profile-card glass">
+              <div class="avatars">
+                <div class="avatar">T</div>
+                <div class="heart">♥</div>
+                <div class="avatar">H</div>
+              </div>
+              <h3 class="couple-name">Thái & Hà</h3>
+              <p class="days">Đã yêu nhau 368 ngày</p>
+            </section>
+            <div class="info">
+              <div class="tile glass">
+                <span>▣</span>
+                <div><b>Ngày yêu nhau</b><strong>27/05/2025</strong></div>
+              </div>
+              <div class="tile glass">
+                <span>⚿</span>
+                <div><b>Couple code</b><strong>1234</strong></div>
+              </div>
+              <div class="tile glass">
+                <span>✉</span>
+                <div><b>Tài khoản</b><strong>Ẩn danh trên thiết bị này</strong></div>
+              </div>
+            </div>
+          </div>
+          <nav class="nav glass">
+            <div class="nav-item"><span>⌂</span><span>Home</span></div>
+            <div class="nav-item"><span>▦</span><span>Memories</span></div>
+            <div class="nav-item"><span>✦</span><span>Random</span></div>
+            <div class="nav-item active"><span>●</span><span>Profile</span></div>
+          </nav>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
