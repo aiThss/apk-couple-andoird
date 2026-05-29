@@ -576,18 +576,30 @@ router.post('/me/partner-avatar', requireUser, upload.single('avatar'), async (r
   }
 });
 
+async function latestCouplePhoto(user: UserDocument) {
+  if (!user.coupleId) {
+    throw new HttpError(409, 'User is not in a couple');
+  }
+
+  return Photo.findOne({
+    coupleId: user.coupleId,
+    deletedAt: { $exists: false },
+  }).sort({ createdAt: -1, _id: -1 });
+}
+
+router.get('/photos/latest', requireUser, async (req, res, next) => {
+  try {
+    const photo = await latestCouplePhoto(req.user!);
+
+    res.json({ photo: photo ? serializePhoto(photo) : null });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/photos/latest-partner', requireUser, async (req, res, next) => {
   try {
-    const user = req.user!;
-    if (!user.coupleId) {
-      throw new HttpError(409, 'User is not in a couple');
-    }
-
-    const photo = await Photo.findOne({
-      coupleId: user.coupleId,
-      ownerId: { $ne: user._id },
-      deletedAt: { $exists: false },
-    }).sort({ createdAt: -1 });
+    const photo = await latestCouplePhoto(req.user!);
 
     res.json({ photo: photo ? serializePhoto(photo) : null });
   } catch (error) {
@@ -606,7 +618,7 @@ router.get('/photos', requireUser, async (req, res, next) => {
       coupleId: user.coupleId,
       deletedAt: { $exists: false },
     })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .limit(100);
 
     res.json({ photos: photos.map(serializePhoto) });

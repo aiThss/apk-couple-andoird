@@ -48,32 +48,16 @@ class GlassNavBar extends StatelessWidget {
                 builder: (context, constraints) {
                   final itemWidth = constraints.maxWidth / _items.length;
                   return Stack(
+                    clipBehavior: Clip.none,
                     children: [
                       AnimatedPositioned(
-                        duration: const Duration(milliseconds: 360),
-                        curve: Curves.easeOutBack,
-                        left: itemWidth * selectedIndex,
-                        top: 0,
-                        bottom: 0,
-                        width: itemWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.22),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                  blurRadius: 18,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOutCubic,
+                        left: itemWidth * selectedIndex + 4,
+                        top: 4,
+                        bottom: 4,
+                        width: itemWidth - 8,
+                        child: const _LiquidIndicator(),
                       ),
                       Row(
                         children: [
@@ -92,6 +76,50 @@ class GlassNavBar extends StatelessWidget {
                 },
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LiquidIndicator extends StatelessWidget {
+  const _LiquidIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.34),
+            Colors.white.withValues(alpha: 0.13),
+          ],
+        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.26)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.14),
+            blurRadius: 16,
+            spreadRadius: -2,
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: RadialGradient(
+            center: const Alignment(-0.5, -0.85),
+            radius: 1.2,
+            colors: [Colors.white.withValues(alpha: 0.18), Colors.transparent],
           ),
         ),
       ),

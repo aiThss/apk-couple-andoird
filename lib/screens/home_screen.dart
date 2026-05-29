@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     try {
-      final photo = await widget.apiService.latestPartnerPhoto();
+      final photo = await widget.apiService.latestPhoto();
       if (!mounted) return;
       setState(() {
         _photo = photo;
@@ -177,7 +177,7 @@ class _HomeBody extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         photo == null
-                            ? 'Chờ ảnh đầu tiên từ ${profile.partnerName}'
+                            ? 'Chờ ảnh đầu tiên của hai người'
                             : 'Ảnh mới nhất từ ${photo!.ownerName}',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: softPink.withValues(alpha: 0.82),
@@ -189,9 +189,13 @@ class _HomeBody extends StatelessWidget {
                 ),
                 GlassCard(
                   borderRadius: 18,
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(4),
                   glow: true,
-                  child: const Icon(Icons.lock_rounded, color: softPink),
+                  child: IconButton(
+                    tooltip: 'Tải lại ảnh mới nhất',
+                    onPressed: () => onRefresh(),
+                    icon: const Icon(Icons.refresh_rounded, color: softPink),
+                  ),
                 ),
               ],
             ),

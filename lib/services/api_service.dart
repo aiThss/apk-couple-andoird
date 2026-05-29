@@ -194,14 +194,16 @@ class ApiService {
     return AppUser.fromJson(payload['user'] as Map<String, dynamic>);
   }
 
-  Future<CouplePhoto?> latestPartnerPhoto() async {
-    final payload = await _jsonRequest('GET', '/photos/latest-partner');
+  Future<CouplePhoto?> latestPhoto() async {
+    final payload = await _jsonRequest('GET', '/photos/latest');
     final photo = payload['photo'];
     if (photo == null) {
       return null;
     }
     return CouplePhoto.fromJson(photo as Map<String, dynamic>);
   }
+
+  Future<CouplePhoto?> latestPartnerPhoto() => latestPhoto();
 
   Future<List<CouplePhoto>> memories() async {
     final payload = await _jsonRequest('GET', '/photos');
